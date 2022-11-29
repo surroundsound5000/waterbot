@@ -3,7 +3,7 @@
 #### Description:
 The goal is to make an automated watering pump. But with a web server running on a Raspberry Pi that controls the pump. 
 
-## Steps involved
+## Steps Involved
 ### Pi
   Just flash a regular Raspbian image to a regular RasPi.
 ### Flask
