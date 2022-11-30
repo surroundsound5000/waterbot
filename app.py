@@ -1,7 +1,8 @@
 import sqlite3
 from flask import Flask, render_template, request, session
-from flask_session import Session
 from werkzeug.security import check_password_hash
+from flask_session import Session
+
 
 app = Flask(__name__)
 
