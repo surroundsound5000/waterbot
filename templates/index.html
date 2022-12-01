@@ -7,15 +7,18 @@ Index
 
 
 <div class="container mt-3">
+	
 	<h3>Current Watering Schedule</h3>
 	<p> </p>
 
 	{% if session["user_id"] %}
+	
+	<!-- Table layout when logged in -->
 
 	<form action="/" method="POST">
 
 	<table class="table table-bordered table-striped table-hover text-center">
-		<thead class="text-bg-secondary"><tr>
+		<thead class="text-bg-dark"><tr>
 			<th>
 				Days
 			</th>
@@ -43,10 +46,26 @@ Index
 				{% endif %}
 			</td>
 			<td>
-				{{ day['time'] }}
+				<select class="form-select" name="time{{ day['day'] }}">
+					{% for time in times %}
+						{% if time==day['time'] %} 
+						<option value="{{ time }}" selected>{{ time }}</option> 
+						{% else %}
+						<option value="{{ time }}" >{{ time }}</option>
+						{% endif %}
+					{% endfor %}
+				</select>
 			</td>
 			<td>
-				{{ day['time'] }}
+				<select class="form-select" name="runtime{{ day['day'] }}">
+					{% for runtime in runtimes %}
+						{% if runtime==day['runtime'] %} 
+						<option value="{{ runtime }}" selected>{{ runtime }}</option> 
+						{% else %}
+						<option value="{{ runtime }}" >{{ runtime }}</option>
+						{% endif %}
+					{% endfor %}
+				</select>
 			</td>
 		</tr>
 		{% endfor %}
@@ -59,6 +78,9 @@ Index
 		</div>
 
 	{% else %}
+
+			<!-- Table layout when not logged in -->
+
 	<table class="table table-bordered table-striped table-hover text-center">
 		<thead class="text-bg-secondary"><tr>
 			<th>

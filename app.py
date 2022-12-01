@@ -16,6 +16,9 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+# Create available times
+times = ['5:00','6:00','7:00','8:00']
+runtimes = ['1','2','3','5','7','10','15','20','30']
 
 ''' Routes a'hoy!'''
 
@@ -33,17 +36,38 @@ def index():
                 conn.execute('''UPDATE schedule SET active = 'YES' WHERE day = ? ''', [day['day']])
             else:
                 conn.execute('''UPDATE schedule SET active = 'NO' WHERE day = ? ''', [day['day']])
+            conn.execute('''UPDATE schedule SET time = ? WHERE day = ? ''', (request.form.get('time'+day['day']), day['day']))
+            print('runtime'+day['day'],"=",request.form.get('runtime'+day['day']))
+
+
+
+
+
+
+
+
+
+
+
+
+            # TODO Fix database updating issue
+            # not loading the 'selected' attribute correctly in index.html line 60-70ish
+
+            #print(type(times[0]))
+            #print(type(runtimes[0]))
+
+            conn.execute('''UPDATE schedule SET runtime = ? WHERE day = ? ''', (request.form.get('runtime'+day['day']), day['day']))
         conn.commit()
         schedule = conn.execute('SELECT * FROM schedule').fetchall()
         conn.close()
-        return render_template('index.html', schedule = schedule)
+        return render_template('index.html', schedule = schedule, times=times, runtimes=runtimes)
 
 
    # Load index page (assuming no update)
     conn = get_db_connection()
     schedule = conn.execute('SELECT * FROM schedule').fetchall()
     conn.close()
-    return render_template('index.html', schedule = schedule)
+    return render_template('index.html', schedule = schedule, times=times)
 
     
 @app.route("/login", methods=["GET", "POST"])
