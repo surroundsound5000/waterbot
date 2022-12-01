@@ -7,52 +7,45 @@ Index
 
 
 <div class="container mt-3">
-	<h1> Watering Schedule</h1>
-	<p>Current watering schedule:</p>
-	
+	<h3>Current Watering Schedule</h3>
+	<p> </p>
+
 	<table class="table table-bordered table-striped table-hover text-center">
 		<thead class="text-bg-secondary"><tr>
 			<th>
 				Days
 			</th>
 			<th>
-				Water On
+				Watering Day
 			</th>
 			<th>
-				Time On
+				Start Time
 			</th>
 			<th>
 				Run Time
 			</th>
 		</tr></thead>
-		
-		<!-- Table rows to be populated from SQL/Python -->
+
+		{% for day in schedule %}
 		<tr>
-			<td class="text-start">Monday</td>
 			<td>
-				<input class="form-check-input" type="checkbox" checked>
+				{{ day['day'] }}
 			</td>
-			<td>5:00:00</td>
-			<td>00:00:03</td>
-		</tr>
-		
-		<tr>
-			<td class="text-start">Tuesday</td>
 			<td>
-				<input class="form-check-input" type="checkbox">
+				{% if day['active'] == 'YES' %}
+				<i class="bi bi-check-square"></i>
+				{% else %}
+				<i class="bi bi-square"></i>
+				{% endif %}
 			</td>
-			<td class="text-muted">5:00:00</td>
-			<td class="text-muted">00:00:03</td>
-		</tr>
-		
-		<tr>
-			<td class="text-start">Wednesday</td>
 			<td>
-				<input class="form-check-input" type="checkbox" checked>
+				{{ day['time'] }}
 			</td>
-			<td>5:00:00</td>
-			<td>00:00:05</td>
+			<td>
+				{{ day['time'] }}
+			</td>
 		</tr>
+		{% endfor %}
 		
 	</table>
 	</div>
