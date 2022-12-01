@@ -10,6 +10,8 @@ Index
 	<h3>Current Watering Schedule</h3>
 	<p> </p>
 
+	{% if session["user_id"] %}
+
 	<table class="table table-bordered table-striped table-hover text-center">
 		<thead class="text-bg-secondary"><tr>
 			<th>
@@ -46,7 +48,50 @@ Index
 			</td>
 		</tr>
 		{% endfor %}
-		
+		</table>
+		<div class="text-end">
+			<a class="btn btn-secondary" href="/">Cancel Changes</a>
+			<button class="btn btn-success">Save Changes</button>
+		</div>
+
+	{% else %}
+	<table class="table table-bordered table-striped table-hover text-center">
+		<thead class="text-bg-secondary"><tr>
+			<th>
+				Days
+			</th>
+			<th>
+				Watering Day
+			</th>
+			<th>
+				Start Time
+			</th>
+			<th>
+				Run Time
+			</th>
+		</tr></thead>
+
+		{% for day in schedule %}
+		<tr>
+			<td>
+				{{ day['day'] }}
+			</td>
+			<td>
+				{% if day['active'] == 'YES' %}
+				<i class="bi bi-check-square"></i>
+				{% else %}
+				<i class="bi bi-square"></i>
+				{% endif %}
+			</td>
+			<td>
+				{{ day['time'] }}
+			</td>
+			<td>
+				{{ day['time'] }}
+			</td>
+		</tr>
+		{% endfor %}
+	{% endif %}	
 	</table>
 	</div>
 </div>

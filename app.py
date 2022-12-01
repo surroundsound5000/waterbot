@@ -1,8 +1,7 @@
 import sqlite3
-from flask import Flask, render_template, request, session
-from werkzeug.security import check_password_hash
+from flask import Flask, redirect, render_template, request, session
+from werkzeug.security import check_password_hash, generate_password_hash
 from flask_session import Session
-
 
 app = Flask(__name__)
 
@@ -46,14 +45,19 @@ def login():
             return render_template('login.html', error="Must provide password.")
 
         # Query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
+        #rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
+        conn = get_db_connection()
+        users = conn.execute('SELECT * FROM users').fetchall()
+        conn.close()
+        print("Hash for",request.form.get("password"),"=",generate_password_hash(request.form.get("password")))
 
         # Ensure username exists and password is correct
-        if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
+        if len(users) != 1 or not check_password_hash(users[0]["hash"], request.form.get("password")):
             return render_template('login.html', error="Invalid username and/or password.")
 
         # Remember which user has logged in
-        session["user_id"] = rows[0]["id"]
+        session["user_id"] = users[0]["id"]
+        print(users[0]["id"])
 
         # Redirect user to home page
         return redirect("/")
