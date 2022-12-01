@@ -8,11 +8,19 @@
 		</a>
 	</div> 
 
+	{% if session["user_id"] %}
+	<div class="nav-item text-end col-4">
+		<a class="nav-link" href="login">
+			Logout
+		</a>
+	</div>
+	{% else %}
 	<div class="nav-item text-end col-4">
 		<a class="nav-link" href="login">
 			Login
 		</a>
 	</div>
+	{% endif %}
 
 </div>
 </nav>
