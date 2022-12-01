@@ -12,6 +12,8 @@ Index
 
 	{% if session["user_id"] %}
 
+	<form action="/" method="POST">
+
 	<table class="table table-bordered table-striped table-hover text-center">
 		<thead class="text-bg-secondary"><tr>
 			<th>
@@ -34,10 +36,10 @@ Index
 				{{ day['day'] }}
 			</td>
 			<td>
-				{% if day['active'] == 'YES' %}
-				<i class="bi bi-check-square"></i>
+				{% if day['active'] == 'YES' %} 
+				<input class="form-check-input" type="checkbox" name="{{day['day']}}" checked> 
 				{% else %}
-				<i class="bi bi-square"></i>
+				<input class="form-check-input" type="checkbox" name="{{day['day']}}"> 
 				{% endif %}
 			</td>
 			<td>
@@ -50,8 +52,10 @@ Index
 		{% endfor %}
 		</table>
 		<div class="text-end">
-			<a class="btn btn-secondary" href="/">Cancel Changes</a>
-			<button class="btn btn-success">Save Changes</button>
+			
+				<a class="btn btn-secondary" href="/">Cancel Changes</a>
+				<button class="btn btn-success">Save Changes</button>
+			</form>
 		</div>
 
 	{% else %}

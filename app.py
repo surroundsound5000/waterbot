@@ -19,12 +19,32 @@ def get_db_connection():
 
 ''' Routes a'hoy!'''
 
-@app.route('/')
+@app.route('/', methods=["GET", "POST"])
 def index():
+
+    # Script for updating database
+    if request.method == "POST":
+        
+        # Update database based on checkboxes
+        conn = get_db_connection()
+        schedule = conn.execute('SELECT * FROM schedule').fetchall()
+        for day in schedule:
+            if request.form.get(day['day']):
+                conn.execute('''UPDATE schedule SET active = 'YES' WHERE day = ? ''', [day['day']])
+            else:
+                conn.execute('''UPDATE schedule SET active = 'NO' WHERE day = ? ''', [day['day']])
+        conn.commit()
+        schedule = conn.execute('SELECT * FROM schedule').fetchall()
+        conn.close()
+        return render_template('index.html', schedule = schedule)
+
+
+   # Load index page (assuming no update)
     conn = get_db_connection()
     schedule = conn.execute('SELECT * FROM schedule').fetchall()
     conn.close()
     return render_template('index.html', schedule = schedule)
+
     
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -45,12 +65,10 @@ def login():
             return render_template('login.html', error="Must provide password.")
 
         # Query database for username
-        #rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
         conn = get_db_connection()
         users = conn.execute('SELECT * FROM users').fetchall()
         conn.close()
-        print("Hash for",request.form.get("password"),"=",generate_password_hash(request.form.get("password")))
-
+        
         # Ensure username exists and password is correct
         if len(users) != 1 or not check_password_hash(users[0]["hash"], request.form.get("password")):
             return render_template('login.html', error="Invalid username and/or password.")
@@ -65,16 +83,6 @@ def login():
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("login.html")
-
-@app.route("/logout")
-def logout():
-    """Log user out"""
-
-    # Forget any user_id
-    session.clear()
-
-    # Redirect user to login form
-    return redirect("/")
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000, host='192.168.15.37')
