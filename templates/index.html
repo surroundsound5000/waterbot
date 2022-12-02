@@ -1,21 +1,22 @@
 {% extends "template.html" %}
 {% block title %}
-Index
+Waterbot
 {% endblock %}
 {% block content %}
 
-
-
 <div class="container mt-3">
+	
 	<h3>Current Watering Schedule</h3>
 	<p> </p>
 
 	{% if session["user_id"] %}
+	
+	<!-- Table layout when logged in -->
 
 	<form action="/" method="POST">
 
 	<table class="table table-bordered table-striped table-hover text-center">
-		<thead class="text-bg-secondary"><tr>
+		<thead class="text-bg-dark"><tr>
 			<th>
 				Days
 			</th>
@@ -43,10 +44,27 @@ Index
 				{% endif %}
 			</td>
 			<td>
-				{{ day['time'] }}
+				<select class="form-select" name="time{{ day['day'] }}">
+					{% for time in times %}
+						{% if time==day['time'] %} 
+						<option value="{{ time }}" selected>{{ time }}</option> 
+						{% else %}
+						<option value="{{ time }}" >{{ time }}</option>
+						{% endif %}
+					{% endfor %}
+				</select>
 			</td>
 			<td>
-				{{ day['time'] }}
+
+				<select class="form-select" name="runtime{{ day['day'] }}">
+					{% for runt in runtimes %}
+						{% if runt==day['runtime'] %} 
+						<option value="{{ runt }}" selected>{{ runt }}</option> 
+						{% else %}
+						<option value="{{ runt }}" >{{ runt }} </option>
+						{% endif %}
+					{% endfor %}
+				</select>
 			</td>
 		</tr>
 		{% endfor %}
@@ -59,6 +77,9 @@ Index
 		</div>
 
 	{% else %}
+
+			<!-- Table layout when not logged in -->
+
 	<table class="table table-bordered table-striped table-hover text-center">
 		<thead class="text-bg-secondary"><tr>
 			<th>
@@ -80,19 +101,31 @@ Index
 			<td>
 				{{ day['day'] }}
 			</td>
+			{% if day['active'] == 'YES' %}
 			<td>
-				{% if day['active'] == 'YES' %}
 				<i class="bi bi-check-square"></i>
-				{% else %}
+			</td>	
+			<td>
+				{{ day['time'] }}
+			</td>	
+			<td>
+				{{ day['runtime'] }}
+			</td>
+			{% else %}
+			<td>
 				<i class="bi bi-square"></i>
-				{% endif %}
 			</td>
-			<td>
-				{{ day['time'] }}
+			<td class="text-muted">
+				<i>
+					{{ day['time'] }}
+				</i>
 			</td>
-			<td>
-				{{ day['time'] }}
+			<td class="text-muted">
+				<i>
+					{{ day['runtime'] }}
+				</i>
 			</td>
+			{% endif %}
 		</tr>
 		{% endfor %}
 	{% endif %}	
