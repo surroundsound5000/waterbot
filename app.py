@@ -2,6 +2,7 @@ import sqlite3
 from flask import Flask, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_session import Session
+import time 
 
 app = Flask(__name__)
 
@@ -18,7 +19,7 @@ def get_db_connection():
 
 # Create available times
 times = ['5:00','6:00','7:00','8:00']
-runtimes = ['1','2','3','5','7','10','15','20','30']
+runtimes = [1,2,3,5,7,10,15,20,30]
 
 ''' Routes a'hoy!'''
 
@@ -27,48 +28,30 @@ def index():
 
     # Script for updating database
     if request.method == "POST":
-        
+        start = time.time()
         # Update database based on checkboxes
         conn = get_db_connection()
         schedule = conn.execute('SELECT * FROM schedule').fetchall()
         for day in schedule:
+            print(request.form.get(day['day']),"@", time.time()-start)
             if request.form.get(day['day']):
                 conn.execute('''UPDATE schedule SET active = 'YES' WHERE day = ? ''', [day['day']])
             else:
                 conn.execute('''UPDATE schedule SET active = 'NO' WHERE day = ? ''', [day['day']])
             conn.execute('''UPDATE schedule SET time = ? WHERE day = ? ''', (request.form.get('time'+day['day']), day['day']))
-            print('runtime'+day['day'],"=",request.form.get('runtime'+day['day']))
-
-
-
-
-
-
-
-
-
-
-
-
-            # TODO Fix database updating issue
-            # not loading the 'selected' attribute correctly in index.html line 60-70ish
-
-            #print(type(times[0]))
-            #print(type(runtimes[0]))
-
             conn.execute('''UPDATE schedule SET runtime = ? WHERE day = ? ''', (request.form.get('runtime'+day['day']), day['day']))
         conn.commit()
         schedule = conn.execute('SELECT * FROM schedule').fetchall()
         conn.close()
+        print("Update complete @ ", time.time()-start)
         return render_template('index.html', schedule = schedule, times=times, runtimes=runtimes)
 
 
    # Load index page (assuming no update)
     conn = get_db_connection()
     schedule = conn.execute('SELECT * FROM schedule').fetchall()
-    conn.close()
-    return render_template('index.html', schedule = schedule, times=times)
-
+    conn.close()  
+    return render_template('index.html', schedule = schedule, times=times, runtimes=runtimes)
     
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -88,18 +71,19 @@ def login():
         elif not request.form.get("password"):
             return render_template('login.html', error="Must provide password.")
 
+
+
         # Query database for username
         conn = get_db_connection()
-        users = conn.execute('SELECT * FROM users').fetchall()
+        users = conn.execute('''SELECT * FROM users WHERE username = ?''', [request.form.get("username")]).fetchall()
         conn.close()
-        
+
         # Ensure username exists and password is correct
         if len(users) != 1 or not check_password_hash(users[0]["hash"], request.form.get("password")):
             return render_template('login.html', error="Invalid username and/or password.")
 
         # Remember which user has logged in
         session["user_id"] = users[0]["id"]
-        print(users[0]["id"])
 
         # Redirect user to home page
         return redirect("/")

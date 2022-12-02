@@ -16,11 +16,11 @@ The goal is to make an automated watering pump. But with a web server running on
 ## Git
   Get github working on the RasPi. Need to use SSH for pushes/ commits, which means generating a new key on the pi and registering this GitHub. 
 ## Website
-  Build a basic website - I used Bootstrap pretty heavily. I am keen to try to complete the task with no other CSS or Javascript - we'll see how long my patience lasts.
+  Build a basic website - I used Bootstrap pretty heavily. I basically didn't use any other CSS or JS, just what bootstrap provides (this involved a handful of workarounds but seems fine).
 ## Python
   I have never used python with GPIO so this should be interesting.
 ## SQL
-  Will use a SQL database to keep track of when the pi should be watering. 
+  I'm using a SQLite3 database to keep track of when the pi should be watering. 
 
   Set up with 
 
@@ -62,9 +62,7 @@ in the / route and
   </td>
 </tr>
 {% endfor %}
-```
-
-
+```  
 in index.html.
 
 ## Login
@@ -83,3 +81,9 @@ to create the table, then
 `insert into users (username, hash) values ("user", "260000$zzb1quTYPkgqIi9h$de4a80cbc64a4c97ba31aa36f97de3358797128854c66e2c248218f368e4733d");`
 
 to store the user account. 
+
+Test credentials include *user: password* and *username: pass*.
+
+## The watering part!
+
+Should this be a seperate app or should the flask app run this?
