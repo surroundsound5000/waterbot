@@ -86,4 +86,5 @@ Test credentials include *user: password* and *username: pass*.
 
 ## The watering part!
 
-Should this be a seperate app or should the flask app run this?
+Within app.py, I have used os.fork() to allow the web app to create an instance of the watering script, which will monitor the database and manage the actual watering. This allows the web server to continue doing it's thing while the watering app (water.py) keeps doing its job as well. 
+
