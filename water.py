@@ -35,7 +35,6 @@ def load_db():
 
 def select_day(current_day,sched):
     '''Iterates through sched then returns the row matching the current day'''
-
     for i in range(7):
         if days[current_day] == sched[i][1]:
             return sched[i]
