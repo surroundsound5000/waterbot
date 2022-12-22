@@ -12,11 +12,6 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-
-    
-
-
-
 # Create available times
 times = ['5:00','6:00','7:00','8:00']
 runtimes = [1,2,3,5,7,10,15,20,30]
