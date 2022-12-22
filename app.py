@@ -95,8 +95,8 @@ def login():
 # Forked instance to manage watering
 pid = os.fork()
 if  not(pid==0):
-    from water import do_watering
-    do_watering()
+    import water
+    monitor()
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000, host='192.168.15.37')  
