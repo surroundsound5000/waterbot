@@ -1,8 +1,9 @@
+import os
 import sqlite3
+import time
 from flask import Flask, redirect, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_session import Session
-import time 
 
 app = Flask(__name__)
 
@@ -11,29 +12,31 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
+
+    
+
+
+
+# Create available times
+times = ['5:00','6:00','7:00','8:00']
+runtimes = [1,2,3,5,7,10,15,20,30]
+
 # Link the database to the Flask app
 def get_db_connection():
     conn = sqlite3.connect('waterbot.db')
     conn.row_factory = sqlite3.Row
     return conn
 
-# Create available times
-times = ['5:00','6:00','7:00','8:00']
-runtimes = [1,2,3,5,7,10,15,20,30]
-
 ''' Routes a'hoy!'''
 
 @app.route('/', methods=["GET", "POST"])
 def index():
-
     # Script for updating database
     if request.method == "POST":
-        start = time.time()
         # Update database based on checkboxes
         conn = get_db_connection()
         schedule = conn.execute('SELECT * FROM schedule').fetchall()
         for day in schedule:
-            print(request.form.get(day['day']),"@", time.time()-start)
             if request.form.get(day['day']):
                 conn.execute('''UPDATE schedule SET active = 'YES' WHERE day = ? ''', [day['day']])
             else:
@@ -43,7 +46,6 @@ def index():
         conn.commit()
         schedule = conn.execute('SELECT * FROM schedule').fetchall()
         conn.close()
-        print("Update complete @ ", time.time()-start)
         return render_template('index.html', schedule = schedule, times=times, runtimes=runtimes)
 
 
@@ -71,8 +73,6 @@ def login():
         elif not request.form.get("password"):
             return render_template('login.html', error="Must provide password.")
 
-
-
         # Query database for username
         conn = get_db_connection()
         users = conn.execute('''SELECT * FROM users WHERE username = ?''', [request.form.get("username")]).fetchall()
@@ -92,6 +92,11 @@ def login():
     else:
         return render_template("login.html")
 
+# Forked instance to manage watering
+pid = os.fork()
+if  not(pid==0):
+    import water
+    monitor()
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000, host='192.168.15.37')
-    
+    app.run(debug=True, port=5000, host='192.168.15.37')  
