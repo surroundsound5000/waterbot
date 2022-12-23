@@ -1,7 +1,8 @@
 # Waterbot
-#### Video Demo:  <URL HERE>
+#### Video Demo: https://youtu.be/yKN7U_4wO8U
+#### Github Repo: https://github.com/surroundsound5000/waterbot
 #### Description:
-The goal is to make an automated watering pump. But with a web server running on a Raspberry Pi that controls the pump. 
+The goal is to make an automated watering pump. But with a web app running on a Raspberry Pi that controls the pump. 
 
 
 # Steps Involved
